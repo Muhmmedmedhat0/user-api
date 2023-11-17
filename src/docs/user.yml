@@ -1,0 +1,91 @@
+openapi: 3.0.0
+info:
+  title: User Management API
+  description: API documentation for user retrieval
+  version: 1.0.0
+
+paths:
+  /api/user/{id}:
+    get:
+      tags:
+        - User
+      summary: Get User by ID
+      description: Retrieve user details by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID of the user to retrieve
+          schema:
+            type: string
+      security:
+        - bearerAuth: []  # Apply bearerAuth security
+      responses:
+        '200':
+          description: User retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          description: Unauthorized - Invalid or missing token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden - User is not authorized to perform this action
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        _id:
+          type: string
+          description: User ID
+        firstName:
+          type: string
+          description: User's first name
+        lastName:
+          type: string
+          description: User's last name
+        email:
+          type: string
+          description: User's email
+        marketingConsent:
+          type: boolean
+          description: User's marketing consent status
+      required:
+        - _id
+        - firstName
+        - lastName
+        - email
+        - marketingConsent
+
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+
+securitySchemes:
+  bearerAuth:
+    type: http
+    scheme: bearer

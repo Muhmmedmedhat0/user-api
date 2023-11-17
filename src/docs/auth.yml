@@ -1,0 +1,137 @@
+openapi: 3.0.0
+info:
+  title: User Authentication API
+  description: API documentation for user registration and login
+  version: 1.0.0
+
+paths:
+  /api/auth/register:
+    post:
+      tags:
+        - Auth
+      summary: User Registration
+      description: Endpoint to register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRegistration'
+      responses:
+        '201':
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  token:
+                    type: string
+        '400':
+          description: Bad request, invalid user data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  errors:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Error'
+        '422':
+          description: Email already exists or validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '500':
+          description: Internal server error
+
+  /api/auth/login:
+    post:
+      tags:
+        - Auth
+      summary: User Login
+      description: Endpoint to login an existing user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserLogin'
+      responses:
+        '201':
+          description: User logged in successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  token:
+                    type: string
+        '400':
+          description: Bad request, invalid user data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  errors:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Error'
+        '422':
+          description: Email does not exist or wrong password
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '500':
+          description: Internal server error
+
+components:
+  schemas:
+    UserRegistration:
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        marketingConsent:
+          type: boolean
+      required:
+        - firstName
+        - lastName
+        - email
+        - password
+        - marketingConsent
+
+    UserLogin:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+      required:
+        - email
+        - password
